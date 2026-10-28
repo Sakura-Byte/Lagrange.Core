@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <TrimmerRootAssembly Include="Lagrange.Core" />
+    <InternalsVisibleTo Include="Lagrange.Milky.Test" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\appsettings.json" />

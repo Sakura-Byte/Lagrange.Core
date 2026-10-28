@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Lagrange.Core.Common;
 using Lagrange.Milky.Configurations;
 using Lagrange.Milky.Serialization;
+using Microsoft.Extensions.Logging;
 
 namespace Lagrange.Milky.Signing;
 
@@ -22,18 +23,23 @@ public sealed class HttpSigner : BotSignProvider, IDisposable
 
     private readonly HttpClient _http;
 
-    public HttpSigner(LagrangeConfiguration configuration)
+    public HttpSigner(LagrangeConfiguration configuration, ILogger<HttpSigner> logger)
     {
         _uin = configuration.Login.Uin;
         
-        _http = new HttpClient(new HttpClientHandler
+        _http = new HttpClient(new SignerRetryHandler(new SocketsHttpHandler
         {
             Proxy = configuration.Protocol.Signer.ProxyUrl != null
                 ? new WebProxy { Address = new Uri(configuration.Protocol.Signer.ProxyUrl) }
-                : null
-        })
+                : null,
+            ConnectTimeout = TimeSpan.FromSeconds(5),
+            PooledConnectionLifetime = TimeSpan.FromMinutes(2),
+            PooledConnectionIdleTimeout = TimeSpan.FromSeconds(30),
+        }, logger))
         {
             BaseAddress = new Uri(configuration.Protocol.Signer.NormalizedBaseUrl),
+            Timeout = TimeSpan.FromSeconds(20),
+            MaxResponseContentBufferSize = 1024 * 1024,
             DefaultRequestHeaders =
             {
                 Authorization = new AuthenticationHeaderValue("Bearer", configuration.Protocol.Signer.Token)
@@ -62,7 +68,7 @@ public sealed class HttpSigner : BotSignProvider, IDisposable
             MediaTypeNames.Application.Json
         );
 
-        using var response = await _http.SendAsync(request);
+        using var response = await _http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
 
         using var stream = await response.Content.ReadAsStreamAsync();
