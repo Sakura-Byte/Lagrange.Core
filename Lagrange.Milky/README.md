@@ -181,23 +181,6 @@ Write an implementation of `IEventConverter<TEvent, TData>` in `Lagrange.Milky\E
   - [ ] summary
 - [ ] market_face
 - [x] light_app
-
-## Signer transport resilience
-
-HTTP signing requests retry transient connection failures, TLS transport EOFs,
-interrupted response bodies, HTTP 408/429, and HTTP 5xx up to three total attempts.
-Each attempt recreates the same signing payload and authorization header, with
-250/500 ms exponential backoff plus up to 100 ms jitter. There is a six-second
-attempt timeout and a twenty-second overall request timeout. Server cooldowns
-above two seconds are returned immediately rather than retried early.
-
-Retries apply only to `POST .../sign/sec-sign`, before a QQ packet is sent.
-The message send API is never replayed by this policy. Certificate validation,
-authentication failures, other permanent HTTP errors, and signer application
-errors are not bypassed or retried. Connection pooling refreshes connections
-after two minutes and removes connections idle for thirty seconds. Retry logs
-include only the failure category and attempt count, excluding credentials and
-packet contents.
 - [ ] xml
 
 ### outgoing segment
@@ -216,3 +199,20 @@ packet contents.
   - [ ] summary
   - [ ] prompt
 - [x] light_app
+
+## Signer transport resilience
+
+HTTP signing requests retry transient connection failures, TLS transport EOFs,
+interrupted response bodies, HTTP 408/429, and HTTP 5xx up to three total attempts.
+Each attempt recreates the same signing payload and authorization header, with
+250/500 ms exponential backoff plus up to 100 ms jitter. There is a six-second
+attempt timeout and a twenty-second overall request timeout. Server cooldowns
+above two seconds are returned immediately rather than retried early.
+
+Retries apply only to `POST .../sign/sec-sign`, before a QQ packet is sent.
+The message send API is never replayed by this policy. Certificate validation,
+authentication failures, other permanent HTTP errors, and signer application
+errors are not bypassed or retried. Connection pooling refreshes connections
+after two minutes and removes connections idle for thirty seconds. Retry logs
+include only the failure category and attempt count, excluding credentials and
+packet contents.
