@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,7 +40,14 @@ public partial class MilkyConverter
                     Name = mention.Display ?? string.Empty,
                 }
             },
-        // TODO: face is not implemented in core
+        FaceEntity face => new FaceIncomingSegment
+        {
+            Data = new FaceIncomingSegmentData
+            {
+                FaceId = face.FaceId.ToString(CultureInfo.InvariantCulture),
+                IsLarge = face.IsLargeFace,
+            }
+        },
         ReplyEntity reply => await ToReplyIncomingSegmentAsync(reply, type, ownerPeerUin, ct),
         ImageEntity image => new ImageIncomingSegment
         {
@@ -157,6 +165,9 @@ public partial class MilkyConverter
         TextOutgoingSegment text => new TextEntity(text.Data.Text),
         MentionOutgoingSegment mention => new MentionEntity(mention.Data.UserId, null),
         MentionAllOutgoingSegment => new MentionEntity(0, null),
+        FaceOutgoingSegment face => face.Data.IsLarge
+            ? throw new NotSupportedException("Sending animated large faces is not supported.")
+            : new FaceEntity(ushort.Parse(face.Data.FaceId, NumberStyles.None, CultureInfo.InvariantCulture)),
         ReplyOutgoingSegment reply => await FromReplyOutgoingSegmentAsync(reply, type, ownerPeerUin, ct),
         ImageOutgoingSegment image => new ImageEntity(
             await _resourceConverter.UriToStreamAsync(image.Data.Uri, ct),
@@ -238,6 +249,9 @@ public partial class MilkyConverter
         TextOutgoingSegment text => new TextEntity(text.Data.Text),
         MentionOutgoingSegment mention => new MentionEntity(mention.Data.UserId, null),
         MentionAllOutgoingSegment => new MentionEntity(0, null),
+        FaceOutgoingSegment face => face.Data.IsLarge
+            ? throw new NotSupportedException("Sending animated large faces is not supported.")
+            : new FaceEntity(ushort.Parse(face.Data.FaceId, NumberStyles.None, CultureInfo.InvariantCulture)),
         ReplyOutgoingSegment => new ReplyEntity(), // No information
         ImageOutgoingSegment image => new ImageEntity(
             await _resourceConverter.UriToStreamAsync(image.Data.Uri, ct),

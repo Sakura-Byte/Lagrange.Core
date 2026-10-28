@@ -14,6 +14,12 @@ public class MessageBuilder
         return this;
     }
 
+    public MessageBuilder Face(ushort faceId)
+    {
+        _entities.Add(new FaceEntity(faceId));
+        return this;
+    }
+
     public MessageBuilder Mention(long uin, string? display)
     {
         _entities.Add(new MentionEntity(uin, display));

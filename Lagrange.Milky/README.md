@@ -169,7 +169,7 @@ Write an implementation of `IEventConverter<TEvent, TData>` in `Lagrange.Milky\E
 - [x] text
 - [x] mention
 - [x] mention_all
-- [ ] face
+- [x] face (including legacy and modern QQ system faces; large faces are receive-only)
 - [x] reply
 - [x] image
 - [x] record
@@ -188,7 +188,7 @@ Write an implementation of `IEventConverter<TEvent, TData>` in `Lagrange.Milky\E
 - [x] text
 - [x] mention
 - [x] mention_all
-- [ ] face
+- [x] face (`is_large: false`)
 - [x] reply
 - [x] image
 - [x] record

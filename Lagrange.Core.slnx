@@ -21,6 +21,7 @@
     <Project Path="Lagrange.Proto/Lagrange.Proto.csproj" />
   </Folder>
   <Folder Name="/Protocols.Milky/">
+    <Project Path="Lagrange.Milky.Test/Lagrange.Milky.Test.csproj" />
     <Project Path="Lagrange.Milky/Lagrange.Milky.csproj" />
     <Project Path="Lagrange.Milky.Generator/Lagrange.Milky.Generator.csproj" />
     <!-- <Project Path="Lagrange.Milky.Implementation.Api.Generator/Lagrange.Milky.Implementation.Api.Generator.csproj" /> -->

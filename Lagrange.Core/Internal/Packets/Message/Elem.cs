@@ -7,6 +7,8 @@ namespace Lagrange.Core.Internal.Packets.Message;
 internal partial class Elem
 {
     [ProtoMember(1)] public Text? Text { get; set; } 
+
+    [ProtoMember(2)] public Face? Face { get; set; }
     
     [ProtoMember(4)] public NotOnlineImage? NotOnlineImage { get; set; }
 
@@ -23,6 +25,28 @@ internal partial class Elem
     [ProtoMember(51)] public LightAppElem? LightAppElem { get; set; }
     
     [ProtoMember(53)] public CommonElem? CommonElem { get; set; }
+}
+
+[ProtoPackable]
+internal partial class Face
+{
+    [ProtoMember(1)] public uint Index { get; set; }
+    [ProtoMember(2)] public byte[]? Old { get; set; }
+    [ProtoMember(11)] public byte[]? Buf { get; set; }
+}
+
+[ProtoPackable]
+internal partial class QSmallFaceExtra
+{
+    [ProtoMember(1)] public uint FaceId { get; set; }
+    [ProtoMember(2)] public string? Text { get; set; }
+    [ProtoMember(3)] public string? CompatText { get; set; }
+}
+
+[ProtoPackable]
+internal partial class QBigFaceExtra
+{
+    [ProtoMember(3)] public uint FaceId { get; set; }
 }
 
 [ProtoPackable]
